@@ -70,6 +70,11 @@ func (c *MeetingController) ParseParams() *models.MeetingParams {
         fmt.Println("Error parsing request body", err)
     }
 
+    roomId := c.Ctx.Input.Param(":roomid")
+    if strings.TrimSpace(roomId) != "" {
+        params.Attributes.RoomId = roomId
+    }
+
     return &params
 }
 

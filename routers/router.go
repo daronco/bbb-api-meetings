@@ -16,4 +16,5 @@ import (
 func init() {
     beego.Router("/meetings",&controllers.MeetingController{},"get:Index")
     beego.Router("/meetings",&controllers.MeetingController{},"post:Create")
+    beego.Router("/rooms/:roomid/meetings",&controllers.MeetingController{},"post:Create")
 }
