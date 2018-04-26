@@ -1,18 +1,14 @@
 package main
 
 import (
-    _ "./docs"
-    _ "./routers"
-    "./controllers"
+    _ "github.com/bigbluebutton/bbb-api-meetings/docs"
+    _ "github.com/bigbluebutton/bbb-api-meetings/routers"
+    "github.com/bigbluebutton/bbb-api-meetings/controllers"
 
     "github.com/astaxie/beego"
 )
 
 func main() {
-    if beego.RunMode == "dev" {
-        beego.DirectoryIndex = true
-        beego.StaticDir["/swagger"] = "swagger"
-    }
     beego.ErrorController(&controllers.ErrorController{})
     beego.Run()
 }

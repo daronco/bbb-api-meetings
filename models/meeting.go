@@ -3,7 +3,7 @@ package models
 import (
     "time"
     _ "errors"
-    _ "../utils"
+    _ "github.com/bigbluebutton/bbb-api-meetings/utils"
     "strconv"
     "crypto/sha1"
     "encoding/hex"

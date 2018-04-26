@@ -1,8 +1,8 @@
 package controllers
 
 import (
-    "../models"
-    "../utils"
+    "github.com/bigbluebutton/bbb-api-meetings/models"
+    "github.com/bigbluebutton/bbb-api-meetings/utils"
     "encoding/json"
     "fmt"
     "strings"
@@ -25,7 +25,7 @@ func (c *MeetingController) Index() {
 
     response := models.MeetingResponse{meetings, nil}
     c.Data["json"] = response
-    c.ServeJson()
+    c.ServeJSON()
 }
 
 // @Title Create Meetings
@@ -58,7 +58,7 @@ func (c *MeetingController) Create() {
     }
 
     c.Data["json"] = response
-    c.ServeJson()
+    c.ServeJSON()
 }
 
 func (c *MeetingController) ParseParams() *models.MeetingParams {
