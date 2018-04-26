@@ -1,8 +1,17 @@
-Development:
+## Development
+
+Using the Makefile:
 
 ```
-docker build -t bbb-api-meetings .
-docker run -ti --rm -p 8080:8080 bbb-api-meetings
+make image-dev
+make run-dev
+```
+
+Or do it yourself:
+
+```
+docker build -t bigbluebutton/bbb-api-meetings .
+docker run -ti --rm -p 8080:8080 bigbluebutton/bbb-api-meetings
 ```
 
 Test requests with:

@@ -4,7 +4,6 @@ import (
     "github.com/bigbluebutton/bbb-api-meetings/models"
     "github.com/bigbluebutton/bbb-api-meetings/utils"
     "encoding/json"
-    "fmt"
     "strings"
 
     "github.com/astaxie/beego"
@@ -67,7 +66,7 @@ func (c *MeetingController) ParseParams() *models.MeetingParams {
     // parse request body
     err := json.Unmarshal(c.Ctx.Input.RequestBody, &params)
     if err != nil {
-        fmt.Println("Error parsing request body", err)
+        beego.Error("Error parsing request body", err)
     }
 
     roomId := c.Ctx.Input.Param(":roomid")
