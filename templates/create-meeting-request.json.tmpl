@@ -23,8 +23,8 @@
           "breakoutRooms": [ ]
         },
         "durationProps": {
-          "duration": "{{.Duration}}",
-          "createdTime": "{{.CreateTimeAsTimestamp}}",
+          "duration": {{.Duration}},
+          "createdTime": {{.CreateTimeAsTimestamp}},
           "createdDate": "{{.CreateTimeAsString}}",
           "maxInactivityTimeoutMinutes": 120,
           "warnMinutesBeforeMax": 5,
@@ -36,18 +36,18 @@
           "viewerPass": "{{.AttendeePassword}}"
         },
         "recordProp": {
-          "record": "{{.Record}}",
+          "record": {{.Record}},
           "autoStartRecording": false,
           "allowStartStopRecording": true
         },
         "welcomeProp": {
-          "welcomeMsgTemplate": "<br>Welcome to <b>",
+          "welcomeMsgTemplate": "{{.WelcomeMessage}}",
           "modOnlyMessage": ""
         },
         "voiceProp": {
-          "telVoice": "{{.VoiceBridge}}",
-          "voiceConf": "{{.VoiceBridge}}",
-          "dialNumber": "613-555-1234",
+          "telVoice": {{.VoiceBridge}},
+          "voiceConf": {{.VoiceBridge}},
+          "dialNumber": "{{.DialNumber}}",
           "muteOnStart": false
         },
         "usersProp": {

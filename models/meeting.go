@@ -37,14 +37,18 @@ type Meeting struct {
     ModeratorPassword string    `json:"moderatorPassword"`
     AttendeePassword  string    `json:"attendeePassword"`
     VoiceBridge       int       `json:"voiceBridge"`
+    WelcomeMessage    string    `json:"welcomeMessage"`
+    DialNumber        string    `json:"dialNumber"`
 }
 
+// Returns CreateTime as a string in the format:
+// "Tue Apr 24 21:27:53 UTC 2018"
 func (this Meeting) CreateTimeAsString() string {
-    return "Testing"
+    return this.CreateTime.UTC().Format("Mon Jan 2 15:04:05 MST 2006")
 }
 
 func (this Meeting) CreateTimeAsTimestamp() int {
-    return 123123123
+    return int(this.CreateTime.UnixNano() / 1000000) // ms instead of nano
 }
 
 func GenerateMeetingId(roomId string) string {
@@ -52,7 +56,7 @@ func GenerateMeetingId(roomId string) string {
     h.Write([]byte(roomId))
     roomIdSha := hex.EncodeToString(h.Sum(nil))
 
-    timestamp := time.Now().UnixNano() / 1000 // ms instead of nano
+    timestamp := time.Now().UnixNano() / 1000000 // ms instead of nano
     timestampStr := strconv.FormatInt(timestamp, 10)
 
     return roomIdSha + "-" + timestampStr
@@ -67,10 +71,14 @@ func GetAllMeetings(filters *MeetingFilters) []*Meeting {
 }
 
 func CreateMeeting(params *Meeting) (a *Meeting, err *APIError) {
+    params.CreateTime = time.Now()
+
+    // TODO: tmp
     var msg bytes.Buffer
     t, _ := template.ParseFiles("templates/create-meeting-request.json.tmpl")
     t.Execute(&msg, params)
     fmt.Println("---", msg.String())
+    // redis.CreateMeeting(params)
 
     MeetingList[params.MeetingId] = params
     return MeetingList[params.MeetingId], nil
