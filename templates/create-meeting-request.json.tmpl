@@ -1,0 +1,69 @@
+{
+  "envelope": {
+    "name": "CreateMeetingReqMsg",
+    "routing": {
+      "sender": "bbb-api-meetings"
+    }
+  },
+  "core": {
+    "header": {
+      "name": "CreateMeetingReqMsg"
+    },
+    "body": {
+      "props": {
+        "meetingProp": {
+          "name": "{{.Name}}",
+          "extId": "{{.RoomId}}",
+          "intId": "{{.MeetingId}}",
+          "isBreakout": false
+        },
+        "breakoutProps": {
+          "parentId": "bbb-none",
+          "sequence": 0,
+          "breakoutRooms": [ ]
+        },
+        "durationProps": {
+          "duration": "{{.Duration}}",
+          "createdTime": "{{.CreateTimeAsTimestamp}}",
+          "createdDate": "{{.CreateTimeAsString}}",
+          "maxInactivityTimeoutMinutes": 120,
+          "warnMinutesBeforeMax": 5,
+          "meetingExpireIfNoUserJoinedInMinutes": 5,
+          "meetingExpireWhenLastUserLeftInMinutes": 1
+        },
+        "password": {
+          "moderatorPass": "{{.ModeratorPassword}}",
+          "viewerPass": "{{.AttendeePassword}}"
+        },
+        "recordProp": {
+          "record": "{{.Record}}",
+          "autoStartRecording": false,
+          "allowStartStopRecording": true
+        },
+        "welcomeProp": {
+          "welcomeMsgTemplate": "<br>Welcome to <b>",
+          "modOnlyMessage": ""
+        },
+        "voiceProp": {
+          "telVoice": "{{.VoiceBridge}}",
+          "voiceConf": "{{.VoiceBridge}}",
+          "dialNumber": "613-555-1234",
+          "muteOnStart": false
+        },
+        "usersProp": {
+          "maxUsers": 0,
+          "webcamsOnlyForModerator": false,
+          "guestPolicy": "ASK_MODERATOR"
+        },
+        "metadataProp": {
+          "metadata": { }
+        },
+        "screenshareProps": {
+          "screenshareConf": "77739-SCREENSHARE",
+          "red5ScreenshareIp": "10.159.224.245",
+          "red5ScreenshareApp": "video-broadcast"
+        }
+      }
+    }
+  }
+}

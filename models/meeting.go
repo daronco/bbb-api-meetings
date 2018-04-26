@@ -4,10 +4,12 @@ import (
     "time"
     _ "errors"
     _ "../utils"
-    _ "fmt"
     "strconv"
     "crypto/sha1"
     "encoding/hex"
+    "text/template"
+    "fmt"
+    "bytes"
 )
 
 var (
@@ -65,6 +67,11 @@ func GetAllMeetings(filters *MeetingFilters) []*Meeting {
 }
 
 func CreateMeeting(params *Meeting) (a *Meeting, err *APIError) {
+    var msg bytes.Buffer
+    t, _ := template.ParseFiles("templates/create-meeting-request.json.tmpl")
+    t.Execute(&msg, params)
+    fmt.Println("---", msg.String())
+
     MeetingList[params.MeetingId] = params
     return MeetingList[params.MeetingId], nil
 }
