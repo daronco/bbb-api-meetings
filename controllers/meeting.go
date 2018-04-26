@@ -85,6 +85,8 @@ func (c *MeetingController) ValidateParamsForCreate(params *models.MeetingParams
 }
 
 func (c *MeetingController) PrepareParamsForCreate(params *models.MeetingParams) *models.MeetingParams {
-    params.Attributes.MeetingId = utils.GenerateMeetingId(params.Attributes.RoomId)
+    params.Attributes.MeetingId = models.GenerateMeetingId(params.Attributes.RoomId)
+    params.Attributes.AttendeePassword, _ = utils.RandomHex(8)
+    params.Attributes.ModeratorPassword, _ = utils.RandomHex(8)
     return params
 }

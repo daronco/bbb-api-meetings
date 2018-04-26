@@ -1,11 +1,13 @@
 package models
 
 import (
+    "time"
     _ "errors"
     _ "../utils"
     _ "fmt"
-    _ "strconv"
-    _ "time"
+    "strconv"
+    "crypto/sha1"
+    "encoding/hex"
 )
 
 var (
@@ -14,19 +16,44 @@ var (
 
 func init() {
     MeetingList = make(map[string]*Meeting)
-    r1 := Meeting{"meeting_1", "A Nice Meeting", "room_1", true}
+    r1 := Meeting{MeetingId: "meeting_1", RoomId: "room_1", Name: "A Nice Meeting", Record: true}
     MeetingList["meeting_1"] = &r1
-    // r2 := Meeting{"meeting_2", "Another Nice Meeting", "room_1", false}
+    // r2 := Meeting{"meeting_2", "room_1", "Another Nice Meeting", false}
     // MeetingList["meeting_2"] = &r2
-    // r3 := Meeting{"meeting_3", "Yet Another", "room_2", true}
+    // r3 := Meeting{"meeting_3", "room_2", "Yet Another", true}
     // MeetingList["meeting_3"] = &r3
 }
 
 type Meeting struct {
-    MeetingId string `json:"meetingId"`
-    Name      string `json:"name"`
-    RoomId    string `json:"roomId"`
-    Running   bool   `json:"running"`
+    MeetingId         string    `json:"meetingId"`
+    RoomId            string    `json:"roomId"`
+    Name              string    `json:"name"`
+    Running           bool      `json:"running"`
+    Record            bool      `json:"record"`
+    Duration          int       `json:"duration"`
+    CreateTime        time.Time `json:"createTime"`
+    ModeratorPassword string    `json:"moderatorPassword"`
+    AttendeePassword  string    `json:"attendeePassword"`
+    VoiceBridge       int       `json:"voiceBridge"`
+}
+
+func (this Meeting) CreateTimeAsString() string {
+    return "Testing"
+}
+
+func (this Meeting) CreateTimeAsTimestamp() int {
+    return 123123123
+}
+
+func GenerateMeetingId(roomId string) string {
+    h := sha1.New()
+    h.Write([]byte(roomId))
+    roomIdSha := hex.EncodeToString(h.Sum(nil))
+
+    timestamp := time.Now().UnixNano() / 1000 // ms instead of nano
+    timestampStr := strconv.FormatInt(timestamp, 10)
+
+    return roomIdSha + "-" + timestampStr
 }
 
 func GetAllMeetings(filters *MeetingFilters) []*Meeting {
