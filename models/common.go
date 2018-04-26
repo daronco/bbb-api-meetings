@@ -16,11 +16,11 @@ type APIErrorResponse struct {
     Errors []APIError `json:"errors"`
 }
 
-// // Default response for meeting routes
-// type RecordingResponse struct {
-//     Data []*Recording `json:"data"`
-//     Errors []APIError `json:"errors"`
-// }
+// Response for meeting routes
+type MeetingResponse struct {
+    Data []*Meeting   `json:"data"`
+    Errors []APIError `json:"errors"`
+}
 
 // Parameters accepted when filtering meetings (used in multiple routes)
 type MeetingFilters struct {

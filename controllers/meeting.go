@@ -2,8 +2,10 @@ package controllers
 
 import (
     "../models"
-    _ "encoding/json"
-    _ "fmt"
+    "../utils"
+    "encoding/json"
+    "fmt"
+    "strings"
 
     "github.com/astaxie/beego"
 )
@@ -12,28 +14,18 @@ type MeetingController struct {
     beego.Controller
 }
 
-func (c *MeetingController) ParseParams() *models.MeetingParams {
-    var params models.MeetingParams
+// @Title Get Meetings
+// @Description get a list of Meetings
+// @Success 200 {object} models.Meeting
+// @router / [get]
+func (c *MeetingController) Index() {
+    params := c.ParseParams()
+    meetings := models.GetAllMeetings(&params.Filters)
+    if len(meetings) == 0 { meetings = nil }
 
-    // // parse accepted URL parameters
-    // meetingIds := c.GetStrings("meetingId")
-    // roomIds := c.GetStrings("roomId")
-
-    // // parse request body
-    // err := json.Unmarshal(c.Ctx.Input.RequestBody, &params)
-    // if err != nil {
-    //     fmt.Println("Error parsing request body", err)
-    // }
-
-    // // give priority to parameters set in the URL
-    // if len(meetingIds) > 0 {
-    //     params.Filters.MeetingIds = meetingIds
-    // }
-    // if len(roomIds) > 0 {
-    //     params.Filters.RoomIds = roomIds
-    // }
-
-    return &params
+    response := models.MeetingResponse{meetings, nil}
+    c.Data["json"] = response
+    c.ServeJson()
 }
 
 // @Title Create Meetings
@@ -41,23 +33,58 @@ func (c *MeetingController) ParseParams() *models.MeetingParams {
 // @Success 200 {object} models.Meeting
 // @router / [post]
 func (c *MeetingController) Create() {
-    // params := c.ParseParams()
-    // filters := &params.Filters
-    // var response models.RecordingResponse
+    var response models.MeetingResponse
+    params := c.ParseParams()
 
-    // if filters == nil || (len(filters.RoomIds) == 0 && len(filters.MeetingIds) == 0) {
-    //     err := models.APIError{"NoFilters", "Request aborted because no filters were provided", nil}
-    //     errs := []models.APIError{err}
+    valid, errs := c.ValidateParamsForCreate(params)
+    if !valid {
+        // TODO: set another status code?
+        response = models.MeetingResponse{nil, errs}
+    } else {
+        params = c.PrepareParamsForCreate(params)
 
-    //     // TODO: set another status code?
-    //     response = models.RecordingResponse{nil, errs}
-    // } else {
-    //     recs, errs := models.DeleteAllRecordings(filters)
-    //     if len(recs) == 0 { recs = nil }
-    //     if len(errs) == 0 { errs = nil }
+        var errs []models.APIError
+        beego.Info("Creating meeting with the attributes", params.Attributes)
+        meeting, err := models.CreateMeeting(&params.Attributes)
+        if err != nil {
+            errs = []models.APIError{*err}
+        } else {
+            errs = nil
+        }
+        meetings := []*models.Meeting{}
+        if meeting != nil { meetings = append(meetings, meeting) }
 
-    //     response = models.RecordingResponse{recs, errs}
-    // }
-    // c.Data["json"] = response
-    // c.ServeJson()
+        response = models.MeetingResponse{meetings, errs}
+    }
+
+    c.Data["json"] = response
+    c.ServeJson()
+}
+
+func (c *MeetingController) ParseParams() *models.MeetingParams {
+    var params models.MeetingParams
+
+    // parse request body
+    err := json.Unmarshal(c.Ctx.Input.RequestBody, &params)
+    if err != nil {
+        fmt.Println("Error parsing request body", err)
+    }
+
+    return &params
+}
+
+func (c *MeetingController) ValidateParamsForCreate(params *models.MeetingParams) (a bool, errs []models.APIError) {
+    errors := []models.APIError{}
+
+    if strings.TrimSpace(params.Attributes.RoomId) == "" {
+        err := models.APIError{"InvalidParameter", "Invalid parameter roomId", nil}
+        errors = append(errors, err)
+    }
+
+    return (len(errors) <= 0), errors
+}
+
+func (c *MeetingController) PrepareParamsForCreate(params *models.MeetingParams) *models.MeetingParams {
+    params.Attributes.MeetingId = utils.GenerateMeetingId(params.Attributes.RoomId)
+    return params
 }
