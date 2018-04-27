@@ -1,6 +1,7 @@
 FROM golang
 
 EXPOSE 8080
+ENV PORT 8080
 
 COPY . /go/src/github.com/bigbluebutton/bbb-api-meetings
 WORKDIR /go/src/github.com/bigbluebutton/bbb-api-meetings
